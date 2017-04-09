@@ -163,7 +163,6 @@
 		
 		move.index = $(squares).index(availableSpots[randomNum]);
 		
-		console.log(move.index);
 		return move;
 	}
 	
@@ -188,7 +187,6 @@
 	const bestSpot = () => {
 		let computerMove;
 		// return best computer move and set class accordingly
-		console.log(difficulty);
 		if (difficulty == 'expert') {
 		 	computerMove = minimax(squares, computer);
 		} else {
