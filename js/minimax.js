@@ -1,3 +1,18 @@
+/*
+	Minimax code taken and adapted from article posted on freecodecamp.com by ahmad abdolsaheb:
+
+	https://medium.freecodecamp.com/how-to-make-your-tic-tac-toe-game-unbeatable-by-using-the-minimax-algorithm-9d690bad4b37
+
+	The code can be found here: https://github.com/ahmadabdolsaheb/minimaxarticle
+
+	After looking through various sites, this version provided the best and simplest implementation. I updated the code to
+	bypass the minimax strategy when first starting. Execution times were extreme and frankly not worth it. Instead I opted for
+	an optimal strategy to occupy either a corner or the center.
+
+	Here is an interesting article on tic-tac-toe strategy that provides some insight into possible outcomes based on player starting positions: https://mindyourdecisions.com/blog/2015/06/02/the-best-strategy-for-tic-tac-toe-game-theory-tuesdays/
+*/
+
+
 // Use the module pattern to wrap all of your JavaScript code into a single
 // global variable or an immediately invoked function.
 
@@ -5,6 +20,7 @@
 	// game play variables
 	let currentPlayer = 2;
 	let playerName = '';
+	let difficulty = 'expert';
 	const squares = $('li.box');
 	const winningSquares = [[0, 1, 2],
 							[3, 4, 5],
@@ -55,16 +71,16 @@
 		setSquare(this);
 	});
 	
-	/* MINIMAX FUNCTIONS */
+	/* MINIMAX FUNCTIONS  */
 	
 	// the minimax function
 	const minimax = (newBoard, player) => {
 		
-		// used only on opening sequence
-		let optimalOpeningMoves = [4, 0, 2, 6, 8];
-		
 		// check for available spots
 		let availableSpots = emptyIndexies(newBoard);
+		
+		// used only on opening sequence
+		let optimalOpeningMoves = [4, 0, 2, 6, 8];
 		
 		// don't waste computing power if game is starting.
 		// optimal strategy dictates that we should occupy either the  
@@ -148,25 +164,16 @@
 		return board.filter(':not([class*="box-filled"])');
 	}
 	
-	// checks to see if there is a winning state
-	/*
-	const winning = (board, player) => {
-		let winner = false;
-		for (let i = 0; i < winningSquares.length; i++) {
-			let j = 0;
-			let squareArray = winningSquares[i];
-			do {
-				winner = $(board[squareArray[j]]).hasClass(player);
-				++j;
-			} while (winner && j < squareArray.length);
-			
-			if (winner) {
-				return winner;
-			}
-		}
-		return winner;
+	const randomMove = () => {
+		let move = {};
+		let availableSpots = emptyIndexies(squares);
+		let randomNum = Math.floor(Math.random() * availableSpots.length);
+		
+		move.index = $(squares).index(availableSpots[randomNum]);
+		
+		console.log(move.index);
+		return move;
 	}
-	*/
 	
 	const winning = (board, player) => {
 		if (
@@ -187,8 +194,15 @@
 	}
 	
 	const bestSpot = () => {
+		let computerMove;
 		// return best computer move and set class accordingly
-		let computerMove = minimax(squares, computer);
+		console.log(difficulty);
+		if (difficulty == 'expert') {
+		 	computerMove = minimax(squares, computer);
+		} else {
+			computerMove = randomMove();
+		}
+		
 		$(squares[computerMove.index]).addClass(computer);
 	}
 	
@@ -229,10 +243,27 @@
 	// remove any previously created versions of computer player button and recreate
 	// for start or finish divs
 	const addAIButton = page => {
-		let computer_player = '<a href="#" id="computer-player" class="button">Click to Play the Computer</a><br>';
+		// clean up any existing buttons
 		$('#computer-player').remove();
+		$('#easy').remove();
+		$('#expert').remove();
+		
+		let computer_player = '<a href="#" id="computer-player" class="button">Click to Play the Computer</a><br>'
+		+ '<a href="#" id="easy" class="button skill">Easy</a>'
+		+ '<a href="#" id="expert" class="button skill">Expert</a><br>';
 		page === 'start' ? $('#start a').before(computer_player) : $('#finish a').before(computer_player);
-		$('#computer-player').on('click', function() { $( this ).toggleClass('ai'); });
+		$('#computer-player').on('click', function() { 
+			$( this ).toggleClass('ai');
+			$('.skill').addClass('skill-active')
+		});
+		$('#easy').on('click', function() { 
+			$( this ).toggleClass('ai');
+			$('#expert').removeClass('ai');
+		});
+		$('#expert').on('click', function() {
+			$( this ).toggleClass('ai'); 
+			$('#easy').removeClass('ai');
+		});
 	}
 	
 	const modifyStartScreen = () => {
@@ -262,6 +293,10 @@
 		
 		computerPlayer = isAI();
 		
+		if (computerPlayer) {
+			getDifficultyLevel();
+		}
+		
 		setCurrentPlayer(true);
 		$('#start').hide();
 		$('#finish').removeClass('screen-win-one screen-win-two screen-win-tie').hide();
@@ -271,6 +306,10 @@
 	// set if human player wants to play computer
 	const isAI = () => {
 		return $('#computer-player').hasClass('ai');
+	}
+	
+	const getDifficultyLevel = () => {
+		$('#easy').hasClass('ai') ? difficulty = 'easy' : 'expert';
 	}
 	
 	// Add the appropriate class for the winning screen. screen-win-one for player 1
