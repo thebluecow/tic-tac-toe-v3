@@ -15,12 +15,26 @@ h1 {
   text-align: left;
   width: 1.875em; }
 
-.button {
+/* CSS for name field */
+
+#computer-player, #finish-player {
+	margin-bottom: 1em;
+}
+
+.name, .button {
   background: #fff;
   border-radius: 4px;
   box-shadow: 0 2px 0 rgba(0, 0, 0, 0.1);
   display: inline-block;
   padding: 1.25em 3em;
+}
+
+.name {
+	margin: 1em;
+	text-align: center;
+}
+
+.button {
   text-decoration: none;
   -webkit-transition: 0.25s ease;
   transition: 0.25s ease; }
@@ -138,4 +152,21 @@ h1 {
       background-color: #3688C3;
       background-image: url(../img/x.svg); }
 
+/* Adding waaaaaaay down the CSS list to ensure this overwrites button class */
+.ai {
+	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#f3c5bd+0,e86c57+50,ea2803+51,ff6600+75,c72200+100;Red+Gloss */
+	background: rgb(243,197,189); /* Old browsers */
+	background: -moz-linear-gradient(top, rgba(243,197,189,1) 0%, rgba(232,108,87,1) 50%, rgba(234,40,3,1) 51%, rgba(255,102,0,1) 75%, rgba(199,34,0,1) 100%); /* FF3.6-15 */
+	background: -webkit-linear-gradient(top, rgba(243,197,189,1) 0%,rgba(232,108,87,1) 50%,rgba(234,40,3,1) 51%,rgba(255,102,0,1) 75%,rgba(199,34,0,1) 100%); /* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to bottom, rgba(243,197,189,1) 0%,rgba(232,108,87,1) 50%,rgba(234,40,3,1) 51%,rgba(255,102,0,1) 75%,rgba(199,34,0,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f3c5bd', endColorstr='#c72200',GradientType=0 ); /* IE6-9 */
+}
+
+#display-name {
+	position: absolute;
+}
+
+.players, #display-name {
+	right: 2.5%;
+}
 

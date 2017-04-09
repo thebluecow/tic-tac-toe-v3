@@ -1,17 +1,11 @@
-/*
-On the start screen, prompt the user add their name before the game starts
-Display the player’s name on the board screen during game play
-Add programming to support playing against the computer. Only one player plays; the other is controlled by your programming.
-Display the player’s name if they win the game
+// ORIGINAL CODE TO WORK WITH MULTI-PLAYER. HISTORICAL ONLY. NO LONGER USED.
 
-*/
-
-// JavaScript Document
 // Use the module pattern to wrap all of your JavaScript code into a single
 // global variable or an immediately invoked function.
 (function () {
 	// game play variables
 	let currentPlayer = 1;
+	let playerName = '';
 	const squares = $('li.box');
 	const winningSquares = [[0, 1, 2],
 							[3, 4, 5],
@@ -21,6 +15,9 @@ Display the player’s name if they win the game
 							[2, 5, 8],
 							[0, 4, 8],
 							[2, 4, 6]];
+	
+	/* BEGIN VARIABLES FOR MINIMAX */
+	let currentSquares = [];
 	
 	// begin game by hiding the board
 	$('#board').hide();
@@ -60,6 +57,8 @@ Display the player’s name if they win the game
 		// attach the class box-filled-1 (for O) or box-filled-2 (for X) to the square
 		if (!$(listItem).is('[class*="box-filled"]')) {
 			$(listItem).addClass(boxFilled);
+			// set currentSquares array with player value; 1 = O and 2 = X.
+			currentSquares[thisSquare] = currentPlayer;
 			checkGameStatus(thisSquare, boxFilled);
 		}
 	}
@@ -79,7 +78,6 @@ Display the player’s name if they win the game
 				} while (winner && j < squareArray.length);
 				
 				if (winner) {
-					console.log("winner!");
 					break;
 				}
 			}
@@ -92,11 +90,30 @@ Display the player’s name if they win the game
 		}
 	};
 	
+	const modifyStartScreen = () => {
+		// On the start screen, prompt the user add their name before the game starts
+		let player_name = '<input type="text" id="player-name" class="name" placeholder="What\'s your name?"><br>';
+		$('#start a').before(player_name);
+	}
 	
 	// reset game to initial state
 	const newGame = () => {
 		for (let i = 0; i < squares.length; i++) {
 			$(squares[i]).removeClass('box-filled-1').removeClass('box-filled-2');
+		}
+		
+		// set player name if set to an empty string
+		if (playerName === '') {
+			playerName = $('#player-name').val();
+		}
+		
+		// Display the player’s name on the board screen during game play
+		// only display name if one is supplied
+		if (playerName !== '') {
+			let display_name = '<p id="display-name">' + playerName + '</p>';
+			//let computer_player = '<a href="#" id="computer-player" class="button">Computer Opponent</a>';
+			$('#player1').after(display_name);
+			//$('div#board').after(computer_player);
 		}
 		
 		setCurrentPlayer(true);
@@ -150,5 +167,38 @@ Display the player’s name if they win the game
 			$('#player' + inactivePlayerId).addClass('active');
 			currentPlayer = inactivePlayerId;
 		}	
-	};
+	}
+	
+	const loadInitialPage = () => {
+		modifyStartScreen();
+	}
+	
+	/* MINIMAX FUNCTIONS */
+	
+	const emptyIndexies = () => {
+		return $('li.box').filter(':not([class*="box-filled"])');
+	}
+	
+	const winning = boxFilled => {
+		let winner = false;
+		for (let i = 0; i < winningSquares.length; i++) {
+			// check to see if array contains the current index value.
+			if (jQuery.inArray(currentBox, winningSquares[i]) !== -1) {
+				let j = 0;
+				let squareArray = winningSquares[i];
+				do {
+					winner = $(squares[squareArray[j]]).hasClass(boxFilled);
+					console.log(winner + " : " + squareArray[j]);
+					++j;
+				} while (winner && j < squareArray.length);
+				
+				if (winner) {
+					break;
+				}
+			}
+		}
+	}
+	
+	
+	loadInitialPage();
 }());
