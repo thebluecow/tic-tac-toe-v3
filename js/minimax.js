@@ -244,13 +244,12 @@
 	// for start or finish divs
 	const addAIButton = page => {
 		// clean up any existing buttons
-		$('#computer-player').remove();
-		$('#easy').remove();
-		$('#expert').remove();
+		$('#ai-buttons').remove();
+		$('#difficulty-buttons').remove();
 		
-		let computer_player = '<a href="#" id="computer-player" class="button">Click to Play the Computer</a><br>'
-		+ '<a href="#" id="easy" class="button skill">Easy</a>'
-		+ '<a href="#" id="expert" class="button skill">Expert</a><br>';
+		let computer_player = '<div id="ai-buttons"><a href="#" id="computer-player" class="button">Click to Play the Computer</a>'
+		+ '<div id="difficulty-buttons"><a href="#" id="easy" class="button skill">Easy</a>'
+		+ '<a href="#" id="expert" class="button skill">Expert</a></div></div>';
 		page === 'start' ? $('#start a').before(computer_player) : $('#finish a').before(computer_player);
 		$('#computer-player').on('click', function() { 
 			$( this ).toggleClass('ai');
